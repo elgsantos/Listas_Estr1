@@ -1,3 +1,11 @@
+/*
+**************************************
+* Trabalho 3 de Estrutura de Dados I
+* Curso de Sistemas da informacão
+* Aluno: Eduardo Gomes - matricula: 0050011271
+* Quiz
+***************************************
+*/
 #include "fila.h"
 int main(){
     Fila *f;
