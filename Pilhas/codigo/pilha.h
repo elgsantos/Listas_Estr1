@@ -1,66 +1,87 @@
 #include <stdio.h>
 #include <stdlib.h>
-struct lista{
-    float info;
-    char nome[20];
-    struct lista* prox;
+#include <string.h>
+struct lista {
+    int info;
+    struct lista * prox;
 };
 typedef struct lista Lista;
-struct fila{
-    Lista *ini;
-    Lista *fim;
+
+struct pilha{
+    Lista* prim;
 };
-typedef struct fila Fila;
-Fila* fila_cria(void){
-    Fila* f = (Fila*)malloc(sizeof(Fila));
-    f->ini=f->fim=NULL;
-    return f;
+typedef struct pilha Pilha;
+
+Pilha* pilha_cria(void)
+{
+    Pilha* p = (Pilha*)malloc(sizeof(Pilha));
+    p->prim=NULL;
+    return p;
 }
-int fila_vazia(Fila* f){
-    if(f->ini==NULL)
-        return 1;
-    return 0;
-}
-void fila_insere(Fila* f,float v,char nome[20]){
-    Lista* n =(Lista*)malloc(sizeof(Lista));
+
+void pilha_push(Pilha* p, int v)
+{   
+    Lista* n = (Lista*)malloc(sizeof(Lista));
     n->info=v;
-    n->nome=nome;
-    n->prox=NULL; //novo nó passa a ser o último
-    if(f->fim!=NULL) //verifica se a fila está vazia
-        f->fim->prox=n;
-    else
-        f->ini=n;
-    f->fim=n;
+    n->prox=p->prim;
+    p->prim=n;
 }
-float fila_retira (Fila* f){
+
+int pilha_vazia(Pilha* p){
+    if(p->prim!=NULL)
+        return 0;
+    else
+        return 1;
+}
+
+int pilha_pop(Pilha* p){
     Lista* t;
-    float v;
-    if(fila_vazia(f)){
-        printf("Fila vazia.\n");
+    int v;
+    if(pilha_vazia(p)){
+        printf("Pilha vazia. \n");
         exit(1);
     }
-    t=f->ini;
+    t=p->prim;
     v=t->info;
-    f->ini=t->prox;
-    if(f->ini==NULL)
-        f->fim=NULL;
+    p->prim=t->prox;
     free(t);
     return v;
 }
-void fila_libera(Fila* f){
-    Lista* q=f->ini;
+void pilha_libera(Pilha *p){
+    Lista* q=p->prim;
     while(q!=NULL){
-        Lista* t = q->prox; //segura o que e atribui o proximo a 't'
-        free(q);//libera q
-        q=t;//q recebe o t
+        Lista* t=q->prox;
+        free(q);
+        q=t;
     }
-    free(f);
+    free(p);
 }
-void fila_imprime(Fila* f){
-    Lista* q=f->ini;
-    while(q!=NULL){
-        printf("->[%.2f]",q->info);
-        q=q->prox;
+void calcula(Pilha* p1, Pilha* p2){
+    int e1,e2;char simb;
+    int r;
+    e1=(int)pilha_pop(p1);
+    e2=(int)pilha_pop(p1);
+    simb=pilha_pop(p2);
+    if(simb=='+'){//compara os simbolos para fazer as operacoes
+        r=e2+e1;
+    }else if(simb=='-'){
+        r=e2-e1;
+    }else if(simb=='*'){
+        r=e2*e1;
+    }else if(simb=='/'){
+        r=e2/e1;
     }
-    printf("\n");
+    pilha_push(p1,r);
+}
+int val(char c){//converte de caracter para inteiro
+    if(c=='1')return 1;
+    else if(c=='2')return 2;
+    else if(c=='3')return 3;
+    else if(c=='4')return 4;
+    else if(c=='5')return 5;
+    else if(c=='6')return 6;
+    else if(c=='7')return 7;
+    else if(c=='8')return 8;
+    else if(c=='9')return 9;
+    else return 0;
 }
